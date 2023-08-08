@@ -6,7 +6,7 @@ const { checkAmdDefineResult, checkMaybeFunction } = require('./test-helpers');
 describe('Plugin for define blocks with arrow function factories', () => {
   it('transforms anonymous define blocks with one dependency', () => {
     expect(`
-      define(['stuff'], donkeys => {
+      sap.ui.define(['stuff'], donkeys => {
         return {
           llamas: donkeys.version
         };
@@ -23,7 +23,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms anonymous define blocks with one dependency and implicit return value', () => {
     expect(`
-      define(['stuff'], donkeys => ({ llamas: donkeys.version }))
+      sap.ui.define(['stuff'], donkeys => ({ llamas: donkeys.version }))
     `).toBeTransformedTo(`
       module.exports = (() => {
             var donkeys = require('stuff');
@@ -34,7 +34,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms anonymous define blocks with multiple dependencies', () => {
     expect(`
-      define(['stuff', 'here'], (donkeys, aruba) => {
+      sap.ui.define(['stuff', 'here'], (donkeys, aruba) => {
         return {
            llamas: donkeys.version,
            cows: aruba.hi
@@ -54,7 +54,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms anonymous define blocks with multiple dependencies and implicit return value', () => {
     expect(`
-      define(['stuff', 'here'], (donkeys, aruba) => ({ llamas: donkeys.version, cows: aruba.hi }));
+      sap.ui.define(['stuff', 'here'], (donkeys, aruba) => ({ llamas: donkeys.version, cows: aruba.hi }));
     `).toBeTransformedTo(`
       module.exports = (() => {
             var donkeys = require('stuff');
@@ -66,7 +66,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms anonymous define blocks with unused dependencies', () => {
     expect(`
-      define(['stuff', 'here'], (donkeys) => {
+      sap.ui.define(['stuff', 'here'], (donkeys) => {
         return {
            llamas: donkeys.version
         };
@@ -85,7 +85,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
   it('only transforms define blocks at the top level by default', () => {
     const program = `
       if(someDumbCondition) {
-        define(['stuff'], (stuff) => {
+        sap.ui.define(['stuff'], (stuff) => {
           return { hi: 'world' };
         });
       }
@@ -98,7 +98,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
       options: { restrictToTopLevelDefine: false },
       program: `
         if(someDumbCondition) {
-          define(['stuff'], stuff => {
+          sap.ui.define(['stuff'], stuff => {
             return { hi: 'world' };
           });
         }
@@ -115,7 +115,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms anonymous define blocks with no dependency list', () => {
     expect(`
-      define(() => {
+      sap.ui.define(() => {
         return {
            llamas: 'donkeys'
         };
@@ -132,7 +132,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
   it('transforms dependencies listed as variables', () => {
     expect(`
       var dependency = 'hey';
-      define([dependency], (here) => {
+      sap.ui.define([dependency], (here) => {
         return {
            llamas: here.hi
         };
@@ -150,7 +150,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms named define blocks with dependencies', () => {
     expect(`
-      define('thismoduletho', ['hi'], (here) => {
+      sap.ui.define('thismoduletho', ['hi'], (here) => {
         return {
            llamas: here.hi
         };
@@ -167,7 +167,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms named define blocks with no dependency list', () => {
     expect(`
-      define('thismoduletho', () => {
+      sap.ui.define('thismoduletho', () => {
         return {
            llamas: 'they are fluffy'
         };
@@ -183,7 +183,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('does not require a dependency named `require`', () => {
     expect(`
-      define(['require'], (require) => {
+      sap.ui.define(['require'], (require) => {
         var x = require('x');
       });
     `).toBeTransformedTo(`
@@ -195,7 +195,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('does not require a dependency named `require` which has been renamed', () => {
     expect(`
-      define(['require'], (abc) => {
+      sap.ui.define(['require'], (abc) => {
         var x = abc('x');
       });
     `).toBeTransformedTo(`
@@ -208,7 +208,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('handles injection of a dependency named `module`', () => {
     expect(`
-      define(['module'], (module) => {
+      sap.ui.define(['module'], (module) => {
         module.exports = { hey: 'boi' };
       });
     `).toBeTransformedTo(
@@ -222,7 +222,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('handles injection of a dependency named `module` which has been renamed', () => {
     expect(`
-      define(['module'], (abc) => {
+      sap.ui.define(['module'], (abc) => {
         abc.exports = { hey: 'boi' };
       });
     `).toBeTransformedTo(
@@ -237,7 +237,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('handles injection of dependency named `exports`', () => {
     expect(`
-      define(['exports'], (exports) => {
+      sap.ui.define(['exports'], (exports) => {
         exports.hey = 'boi';
       });
     `).toBeTransformedTo(
@@ -251,7 +251,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('handles injection of dependency named `exports` which has been renamed', () => {
     expect(`
-      define(['exports'], (abc) => {
+      sap.ui.define(['exports'], (abc) => {
         abc.hey = 'boi';
       });
     `).toBeTransformedTo(
@@ -266,7 +266,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms the simplified commonjs wrapper', () => {
     expect(`
-      define((require, exports, module) => {
+      sap.ui.define((require, exports, module) => {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -279,7 +279,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
       `)
     );
     expect(`
-      define((require, exports) => {
+      sap.ui.define((require, exports) => {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -292,7 +292,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
       `)
     );
     expect(`
-      define((require) => {
+      sap.ui.define((require) => {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -306,7 +306,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms the simplified commonjs wrapper with weird variable names', () => {
     expect(`
-      define((llamas, cows, bears) => {
+      sap.ui.define((llamas, cows, bears) => {
         var stuff = llamas('hi');
         cows.hey = stuff.boi;
       });
@@ -319,7 +319,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
       `)
     );
     expect(`
-      define((llamas, cows) => {
+      sap.ui.define((llamas, cows) => {
         var stuff = llamas('hi');
         cows.hey = stuff.boi;
       });
@@ -332,7 +332,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
       `)
     );
     expect(`
-      define((donkeys) => {
+      sap.ui.define((donkeys) => {
         var stuff = donkeys('hi');
         exports.hey = stuff.boi;
       });
@@ -347,7 +347,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
   it('accounts for variable name conflicts when checking the result of `define`', () => {
     expect(`
       var amdDefineResult = 'for some reason I have this variable declared already';
-      define((require, exports, module) => {
+      sap.ui.define((require, exports, module) => {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -367,7 +367,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it("lets you declare a dependency as `module` even though that's crazy", () => {
     expect(`
-      define(['notmodule'], (module) => {
+      sap.ui.define(['notmodule'], (module) => {
         return {
           notmodule: module.notmodule
         };
@@ -384,7 +384,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it("lets you declare a dependency as `exports` even though that's crazy", () => {
     expect(`
-      define(['notexports'], (exports) => {
+      sap.ui.define(['notexports'], (exports) => {
         return {
           notexports: exports.notexports
         };
@@ -401,7 +401,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms factories that use the rest operator', () => {
     expect(`
-      define(['dep1', 'dep2', 'dep3'], (dep, ...rest) => {
+      sap.ui.define(['dep1', 'dep2', 'dep3'], (dep, ...rest) => {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -415,7 +415,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms factories that use the rest operator including AMD keywords', () => {
     expect(`
-      define(['dep1', 'dep2', 'module', 'exports', 'require'], (dep, ...rest) => {
+      sap.ui.define(['dep1', 'dep2', 'module', 'exports', 'require'], (dep, ...rest) => {
         dep.doStuff();
       });
     `).toBeTransformedTo(
@@ -431,7 +431,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
 
   it('transforms factories that use the rest operator when there are no rest arguments', () => {
     expect(`
-      define(['dep1'], (dep, ...rest) => {
+      sap.ui.define(['dep1'], (dep, ...rest) => {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -452,7 +452,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
     `;
     expect(`
       ${variableFactory}
-      define(['stuff', 'hi'], myVariableFactory)
+      sap.ui.define(['stuff', 'hi'], myVariableFactory)
     `).toBeTransformedTo(`
       ${variableFactory}
       ${checkMaybeFunction('myVariableFactory', ['stuff', 'hi'])}
@@ -468,7 +468,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
     `;
     expect(`
       ${variableFactory}
-      define(myVariableFactory)
+      sap.ui.define(myVariableFactory)
     `).toBeTransformedTo(`
       ${variableFactory}
       ${checkMaybeFunction('myVariableFactory')}
@@ -478,7 +478,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
   it('ignores modules that have been excluded by block comments', () => {
     const program = `
       /* ${TRANSFORM_AMD_TO_COMMONJS_IGNORE} */
-      define(['stuff', 'here'], (donkeys, aruba) => {
+      sap.ui.define(['stuff', 'here'], (donkeys, aruba) => {
         return {
            llamas: donkeys.version,
            cows: aruba.hi
@@ -491,7 +491,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
   it('ignores modules that have been excluded by line comments', () => {
     const program = `
       // ${TRANSFORM_AMD_TO_COMMONJS_IGNORE}
-      define(['stuff', 'here'], (donkeys, aruba) => {
+      sap.ui.define(['stuff', 'here'], (donkeys, aruba) => {
         return {
            llamas: donkeys.version,
            cows: aruba.hi
@@ -505,7 +505,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
     'transforms normally with non-top-level block comments',
     (comment) => {
       expect(`
-        define(['stuff', 'here'], (donkeys, aruba) => {
+        sap.ui.define(['stuff', 'here'], (donkeys, aruba) => {
           /* ${comment} */
           return {
             llamas: donkeys.version,
@@ -530,7 +530,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
     'transforms normally with non-top-level line comments',
     (comment) => {
       expect(`
-        define(['stuff', 'here'], (donkeys, aruba) => {
+        sap.ui.define(['stuff', 'here'], (donkeys, aruba) => {
           // ${comment}
           return {
             llamas: donkeys.version,
@@ -557,7 +557,7 @@ describe('Plugin for define blocks with arrow function factories', () => {
       expect(`
         /* ${comment} */
         // ${comment}
-        define(['stuff', 'here'], (donkeys, aruba) => {
+        sap.ui.define(['stuff', 'here'], (donkeys, aruba) => {
           return {
             llamas: donkeys.version,
             cows: aruba.hi

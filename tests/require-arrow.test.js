@@ -5,7 +5,7 @@ const { TRANSFORM_AMD_TO_COMMONJS_IGNORE } = require('../src/constants');
 describe('Plugin for require blocks with arrow function callbacks', () => {
   it('transforms require blocks with one dependency', () => {
     expect(`
-      require(['llamas'], (llama) => {
+      sap.ui.require(['llamas'], (llama) => {
         llama.doSomeStuff();
       });
     `).toBeTransformedTo(`
@@ -18,7 +18,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms require blocks with one dependency and implicit return', () => {
     expect(`
-      require(['llamas'], (llama) => llama.doSomeStuff());
+      sap.ui.require(['llamas'], (llama) => llama.doSomeStuff());
     `).toBeTransformedTo(`
       (() => {
             var llama = require('llamas');
@@ -29,7 +29,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms require blocks with multiple dependencies', () => {
     expect(`
-      require(['llamas', 'frogs'], (llama, frog) => {
+      sap.ui.require(['llamas', 'frogs'], (llama, frog) => {
         llama.doSomeStuff();
         frog.sayRibbit();
       });
@@ -45,7 +45,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms require blocks with multiple dependencies and implicit return', () => {
     expect(`
-      require(['llamas', 'frogs'], (llama, frog) => llama.doSomeStuff(frog));
+      sap.ui.require(['llamas', 'frogs'], (llama, frog) => llama.doSomeStuff(frog));
     `).toBeTransformedTo(`
       (() => {
             var llama = require('llamas');
@@ -57,7 +57,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms require blocks with unused dependencies', () => {
     expect(`
-      require(['llamas', 'frogs'], (llama) => {
+      sap.ui.require(['llamas', 'frogs'], (llama) => {
         llama.doSomeStuff();
       });
     `).toBeTransformedTo(`
@@ -71,9 +71,9 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms nested require blocks that have no factory function', () => {
     expect(`
-      require(['here', 'is', 'i'], (here) => {
+      sap.ui.require(['here', 'is', 'i'], (here) => {
         here.doStuff();
-        require(['yep', 'that', 'me']);
+        sap.ui.require(['yep', 'that', 'me']);
       });
     `).toBeTransformedTo(`
       (() => {
@@ -90,9 +90,9 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms nested require blocks that have a factory function', () => {
     expect(`
-      require(['here', 'is', 'i'], (here) => {
+      sap.ui.require(['here', 'is', 'i'], (here) => {
         here.doStuff();
-        require(['yep', 'that', 'me'], (yep) => {
+        sap.ui.require(['yep', 'that', 'me'], (yep) => {
           yep.doStuff();
         });
       });
@@ -114,9 +114,9 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms a require block that is within a define block', () => {
     expect(`
-      define(['here', 'is', 'i'], (here) => {
+      sap.ui.define(['here', 'is', 'i'], (here) => {
         here.doStuff();
-        require(['yep', 'that', 'me'], (yep) => {
+        sap.ui.require(['yep', 'that', 'me'], (yep) => {
           yep.doStuff();
         });
       });
@@ -138,7 +138,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms factories that use the rest operator', () => {
     expect(`
-      require(['dep1', 'dep2', 'dep3'], (dep, ...rest) => {
+      sap.ui.require(['dep1', 'dep2', 'dep3'], (dep, ...rest) => {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -152,7 +152,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms factories that use the rest operator including AMD keywords', () => {
     expect(`
-      require(['dep1', 'dep2', 'module', 'exports', 'require'], (dep, ...rest) => {
+      sap.ui.require(['dep1', 'dep2', 'module', 'exports', 'require'], (dep, ...rest) => {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -166,7 +166,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
 
   it('transforms factories that use the rest operator when there are no rest arguments', () => {
     expect(`
-      require(['dep1'], (dep, ...rest) => {
+      sap.ui.require(['dep1'], (dep, ...rest) => {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -181,7 +181,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
   it('ignores modules that have been excluded by block comments', () => {
     const program = `
       /* ${TRANSFORM_AMD_TO_COMMONJS_IGNORE} */
-      require(['llamas', 'frogs'], (llama, frog) => {
+      sap.ui.require(['llamas', 'frogs'], (llama, frog) => {
         llama.doSomeStuff();
         frog.sayRibbit();
       });
@@ -192,7 +192,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
   it('ignores modules that have been excluded by line comments', () => {
     const program = `
       // ${TRANSFORM_AMD_TO_COMMONJS_IGNORE}
-      require(['llamas', 'frogs'], (llama, frog) => {
+      sap.ui.require(['llamas', 'frogs'], (llama, frog) => {
         llama.doSomeStuff();
         frog.sayRibbit();
       });
@@ -204,7 +204,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
     'transforms normally with non-top-level block comments',
     (comment) => {
       expect(`
-        require(['llamas', 'frogs'], (llama, frog) => {
+        sap.ui.require(['llamas', 'frogs'], (llama, frog) => {
           /* ${comment} */
           llama.doSomeStuff();
           frog.sayRibbit();
@@ -225,7 +225,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
     'transforms normally with non-top-level line comments',
     (comment) => {
       expect(`
-        require(['llamas', 'frogs'], (llama, frog) => {
+        sap.ui.require(['llamas', 'frogs'], (llama, frog) => {
           // ${comment}
           llama.doSomeStuff();
           frog.sayRibbit();
@@ -248,7 +248,7 @@ describe('Plugin for require blocks with arrow function callbacks', () => {
       expect(`
         /* ${comment} */
         // ${comment}
-        require(['llamas', 'frogs'], (llama, frog) => {
+        sap.ui.require(['llamas', 'frogs'], (llama, frog) => {
           llama.doSomeStuff();
           frog.sayRibbit();
         });

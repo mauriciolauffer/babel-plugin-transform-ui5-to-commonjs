@@ -14,7 +14,7 @@ const {
 describe('Plugin for define blocks', () => {
   it('transforms anonymous define blocks with one dependency', () => {
     expect(`
-      define(['stuff'], function(donkeys) {
+      sap.ui.define(['stuff'], function(donkeys) {
         return {
           llamas: donkeys.version
         };
@@ -31,7 +31,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms anonymous define blocks with multiple dependencies', () => {
     expect(`
-      define(['stuff', 'here'], function(donkeys, aruba) {
+      sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
         return {
            llamas: donkeys.version,
            cows: aruba.hi
@@ -51,7 +51,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms anonymous define blocks with unused dependencies', () => {
     expect(`
-      define(['stuff', 'here'], function(donkeys) {
+      sap.ui.define(['stuff', 'here'], function(donkeys) {
         return {
            llamas: donkeys.version
         };
@@ -70,7 +70,7 @@ describe('Plugin for define blocks', () => {
   it('only transforms define blocks at the top level by default', () => {
     const program = `
       if(someDumbCondition) {
-        define(['stuff'], function(stuff) {
+        sap.ui.define(['stuff'], function(stuff) {
           return { hi: 'world' };
         });
       }
@@ -83,7 +83,7 @@ describe('Plugin for define blocks', () => {
       options: { restrictToTopLevelDefine: false },
       program: `
         if(someDumbCondition) {
-          define(['stuff'], function(stuff) {
+          sap.ui.define(['stuff'], function(stuff) {
             return { hi: 'world' };
           });
         }
@@ -100,7 +100,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms anonymous define blocks with no dependency list', () => {
     expect(`
-      define(function() {
+      sap.ui.define(function() {
         return {
            llamas: 'donkeys'
         };
@@ -117,7 +117,7 @@ describe('Plugin for define blocks', () => {
   it('transforms dependencies listed as variables', () => {
     expect(`
       var dependency = 'hey';
-      define([dependency], function(here) {
+      sap.ui.define([dependency], function(here) {
         return {
            llamas: here.hi
         };
@@ -135,7 +135,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms named define blocks with dependencies', () => {
     expect(`
-      define('thismoduletho', ['hi'], function(here) {
+      sap.ui.define('thismoduletho', ['hi'], function(here) {
         return {
            llamas: here.hi
         };
@@ -152,7 +152,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms named define blocks with no dependency list', () => {
     expect(`
-      define('thismoduletho', function() {
+      sap.ui.define('thismoduletho', function() {
         return {
            llamas: 'they are fluffy'
         };
@@ -168,7 +168,7 @@ describe('Plugin for define blocks', () => {
 
   it('does not require a dependency named `require`', () => {
     expect(`
-      define(['require'], function(require) {
+      sap.ui.define(['require'], function(require) {
         var x = require('x');
       });
     `).toBeTransformedTo(`
@@ -180,7 +180,7 @@ describe('Plugin for define blocks', () => {
 
   it('does not require a dependency named `require` which has been renamed', () => {
     expect(`
-      define(['require'], function(abc) {
+      sap.ui.define(['require'], function(abc) {
         var x = abc('x');
       });
     `).toBeTransformedTo(`
@@ -193,7 +193,7 @@ describe('Plugin for define blocks', () => {
 
   it('handles injection of a dependency named `module`', () => {
     expect(`
-      define(['module'], function(module) {
+      sap.ui.define(['module'], function(module) {
         module.exports = { hey: 'boi' };
       });
     `).toBeTransformedTo(
@@ -207,7 +207,7 @@ describe('Plugin for define blocks', () => {
 
   it('handles injection of dependency named `module` which has been renamed', () => {
     expect(`
-      define(['module'], function(abc) {
+      sap.ui.define(['module'], function(abc) {
         abc.exports.hey = 'boi';
       });
     `).toBeTransformedTo(
@@ -222,7 +222,7 @@ describe('Plugin for define blocks', () => {
 
   it('handles injection of dependency named `exports`', () => {
     expect(`
-      define(['exports'], function(exports) {
+      sap.ui.define(['exports'], function(exports) {
         exports.hey = 'boi';
       });
     `).toBeTransformedTo(
@@ -236,7 +236,7 @@ describe('Plugin for define blocks', () => {
 
   it('handles injection of dependency named `exports` which has been renamed', () => {
     expect(`
-      define(['exports'], function(abc) {
+      sap.ui.define(['exports'], function(abc) {
         abc.hey = 'boi';
       });
     `).toBeTransformedTo(
@@ -251,7 +251,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms the simplified commonjs wrapper', () => {
     expect(`
-      define(function(require, exports, module) {
+      sap.ui.define(function(require, exports, module) {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -264,7 +264,7 @@ describe('Plugin for define blocks', () => {
       `)
     );
     expect(`
-      define(function(require, exports) {
+      sap.ui.define(function(require, exports) {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -277,7 +277,7 @@ describe('Plugin for define blocks', () => {
       `)
     );
     expect(`
-      define(function(require) {
+      sap.ui.define(function(require) {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -291,7 +291,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms the simplified commonjs wrapper with weird variable names', () => {
     expect(`
-      define(function(llamas, cows, bears) {
+      sap.ui.define(function(llamas, cows, bears) {
         var stuff = llamas('hi');
         cows.hey = stuff.boi;
       });
@@ -304,7 +304,7 @@ describe('Plugin for define blocks', () => {
       `)
     );
     expect(`
-      define(function(llamas, cows) {
+      sap.ui.define(function(llamas, cows) {
         var stuff = llamas('hi');
         cows.hey = stuff.boi;
       });
@@ -317,7 +317,7 @@ describe('Plugin for define blocks', () => {
       `)
     );
     expect(`
-      define(function(donkeys) {
+      sap.ui.define(function(donkeys) {
         var stuff = donkeys('hi');
         exports.hey = stuff.boi;
       });
@@ -332,7 +332,7 @@ describe('Plugin for define blocks', () => {
   it('accounts for variable name conflicts when checking the result of `define`', () => {
     expect(`
       var ${AMD_DEFINE_RESULT} = 'for some reason I have this variable declared already';
-      define(function(require, exports, module) {
+      sap.ui.define(function(require, exports, module) {
         var stuff = require('hi');
         exports.hey = stuff.boi;
       });
@@ -352,7 +352,7 @@ describe('Plugin for define blocks', () => {
 
   it("lets you declare a dependency as `module` even though that's crazy", () => {
     expect(`
-      define(['notmodule'], function(module) {
+      sap.ui.define(['notmodule'], function(module) {
         return {
           notmodule: module.notmodule
         };
@@ -369,7 +369,7 @@ describe('Plugin for define blocks', () => {
 
   it("lets you declare a dependency as `exports` even though that's crazy", () => {
     expect(`
-      define(['notexports'], function(exports) {
+      sap.ui.define(['notexports'], function(exports) {
         return {
           notexports: exports.notexports
         };
@@ -386,25 +386,25 @@ describe('Plugin for define blocks', () => {
 
   it('transforms non-function modules exporting objects with no dependencies', () => {
     expect(`
-      define({ thismodule: 'is an object' });
+      sap.ui.define({ thismodule: 'is an object' });
     `).toBeTransformedTo(checkMaybeFunction("{ thismodule: 'is an object' }"));
   });
 
   it('transforms non-function modules exporting objects with dependencies', () => {
     expect(`
-      define(['side-effect'], { thismodule: 'is an object' });
+      sap.ui.define(['side-effect'], { thismodule: 'is an object' });
     `).toBeTransformedTo(checkMaybeFunction("{ thismodule: 'is an object' }", ['side-effect']));
   });
 
   it('transforms non-function modules exporting arrays with no dependencies', () => {
     expect(`
-      define(['this', 'module', 'is', 'an', 'array']);
+      sap.ui.define(['this', 'module', 'is', 'an', 'array']);
     `).toBeTransformedTo(checkMaybeFunction("['this', 'module', 'is', 'an', 'array']"));
   });
 
   it('transforms non-function modules exporting arrays with dependencies', () => {
     expect(`
-      define(['side-effect'], ['this', 'module', 'is', 'an', 'array']);
+      sap.ui.define(['side-effect'], ['this', 'module', 'is', 'an', 'array']);
     `).toBeTransformedTo(
       checkMaybeFunction("['this', 'module', 'is', 'an', 'array']", ['side-effect'])
     );
@@ -414,7 +414,7 @@ describe('Plugin for define blocks', () => {
     const primitives = ["'a string'", '33', 'true', 'false', 'null', 'undefined'];
     primitives.forEach((primitive) => {
       expect(`
-        define(${primitive});
+        sap.ui.define(${primitive});
       `).toBeTransformedTo(checkMaybeFunction(primitive));
     });
   });
@@ -423,53 +423,53 @@ describe('Plugin for define blocks', () => {
     const primitives = ["'a string'", '33', 'true', 'false', 'null', 'undefined'];
     primitives.forEach((primitive) => {
       expect(`
-        define(['side-effect'], ${primitive});
+        sap.ui.define(['side-effect'], ${primitive});
       `).toBeTransformedTo(checkMaybeFunction(primitive, ['side-effect']));
     });
   });
 
   it('transforms non-function modules requiring `require` for some reason', () => {
     expect(`
-      define(['require'], { some: 'stuff' });
+      sap.ui.define(['require'], { some: 'stuff' });
     `).toBeTransformedTo(checkMaybeFunction("{ some: 'stuff' }", ['require']));
     expect(`
-      define(['sup', 'require'], { some: 'stuff' });
+      sap.ui.define(['sup', 'require'], { some: 'stuff' });
     `).toBeTransformedTo(checkMaybeFunction("{ some: 'stuff' }", ['sup', 'require']));
   });
 
   it('transforms non-function modules requiring `exports` for some reason', () => {
     expect(`
-      define(['exports'], { some: 'stuff' });
+      sap.ui.define(['exports'], { some: 'stuff' });
     `).toBeTransformedTo(checkMaybeFunction("{ some: 'stuff' }", ['exports']));
     expect(`
-      define(['exports', 'dawg'], { some: 'stuff' });
+      sap.ui.define(['exports', 'dawg'], { some: 'stuff' });
     `).toBeTransformedTo(checkMaybeFunction("{ some: 'stuff' }", ['exports', 'dawg']));
   });
 
   it('transforms non-function modules requiring `module` for some reason', () => {
     expect(`
-      define(['module'], { some: 'stuff' });
+      sap.ui.define(['module'], { some: 'stuff' });
     `).toBeTransformedTo(checkMaybeFunction("{ some: 'stuff' }", ['module']));
     expect(`
-      define(['module', 'lemon'], { some: 'stuff' });
+      sap.ui.define(['module', 'lemon'], { some: 'stuff' });
     `).toBeTransformedTo(checkMaybeFunction("{ some: 'stuff' }", ['module', 'lemon']));
   });
 
   it('transforms named non-function modules with no dependencies', () => {
     expect(`
-      define('auselessname', { thismodule: 'is an object' });
+      sap.ui.define('auselessname', { thismodule: 'is an object' });
     `).toBeTransformedTo(checkMaybeFunction("{ thismodule: 'is an object' }"));
     expect(`
-      define('auselessname', ['an', 'array', 'factory']);
+      sap.ui.define('auselessname', ['an', 'array', 'factory']);
     `).toBeTransformedTo(checkMaybeFunction("['an', 'array', 'factory']"));
   });
 
   it('transforms named non-function modules with dependencies', () => {
     expect(`
-      define('auselessname', ['side-effect'], { thismodule: 'is an object' });
+      sap.ui.define('auselessname', ['side-effect'], { thismodule: 'is an object' });
     `).toBeTransformedTo(checkMaybeFunction("{ thismodule: 'is an object' }", ['side-effect']));
     expect(`
-      define('auselessname', ['side-effect'], ['an', 'array', 'factory']);
+      sap.ui.define('auselessname', ['side-effect'], ['an', 'array', 'factory']);
     `).toBeTransformedTo(checkMaybeFunction("['an', 'array', 'factory']", ['side-effect']));
   });
 
@@ -482,7 +482,7 @@ describe('Plugin for define blocks', () => {
     `;
     expect(`
       ${variableFactory}
-      define(['stuff', 'hi'], myVariableFactory)
+      sap.ui.define(['stuff', 'hi'], myVariableFactory)
     `).toBeTransformedTo(`
       ${variableFactory}
       ${checkMaybeFunction('myVariableFactory', ['stuff', 'hi'])}
@@ -498,7 +498,7 @@ describe('Plugin for define blocks', () => {
     `;
     expect(`
       ${variableFactory}
-      define(myVariableFactory)
+      sap.ui.define(myVariableFactory)
     `).toBeTransformedTo(`
       ${variableFactory}
       ${checkMaybeFunction('myVariableFactory')}
@@ -508,7 +508,7 @@ describe('Plugin for define blocks', () => {
   it('gets a unique variable name if needed when checking for functions', () => {
     expect(`
       var ${MAYBE_FUNCTION} = 'forsomereasonthisexistsinscope'
-      define({ my: 'config', object: 'lol' })
+      sap.ui.define({ my: 'config', object: 'lol' })
     `).toBeTransformedTo(`
       var ${MAYBE_FUNCTION} = 'forsomereasonthisexistsinscope'
       ${checkMaybeFunction("{ my: 'config', object: 'lol' }", null, `_${MAYBE_FUNCTION}`)}
@@ -517,7 +517,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms factories that use the rest operator', () => {
     expect(`
-      define(['dep1', 'dep2', 'dep3'], function(dep, ...rest) {
+      sap.ui.define(['dep1', 'dep2', 'dep3'], function(dep, ...rest) {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -531,7 +531,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms factories that use the rest operator including AMD keywords', () => {
     expect(`
-      define(['dep1', 'dep2', 'module', 'exports', 'require'], function(dep, ...rest) {
+      sap.ui.define(['dep1', 'dep2', 'module', 'exports', 'require'], function(dep, ...rest) {
         dep.doStuff();
       });
     `).toBeTransformedTo(
@@ -547,7 +547,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms factories that use the rest operator when there are no rest arguments', () => {
     expect(`
-      define(['dep1'], function(dep, ...rest) {
+      sap.ui.define(['dep1'], function(dep, ...rest) {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -562,7 +562,7 @@ describe('Plugin for define blocks', () => {
   it('ignores modules that have been excluded by block comments', () => {
     const program = `
       /* ${TRANSFORM_AMD_TO_COMMONJS_IGNORE} */
-      define(['stuff', 'here'], function(donkeys, aruba) {
+      sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
         return {
            llamas: donkeys.version,
            cows: aruba.hi
@@ -575,7 +575,7 @@ describe('Plugin for define blocks', () => {
   it('ignores modules that have been excluded by line comments', () => {
     const program = `
       // ${TRANSFORM_AMD_TO_COMMONJS_IGNORE}
-      define(['stuff', 'here'], function(donkeys, aruba) {
+      sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
         return {
            llamas: donkeys.version,
            cows: aruba.hi
@@ -589,7 +589,7 @@ describe('Plugin for define blocks', () => {
     'transforms normally with non-top-level block comments',
     (comment) => {
       expect(`
-        define(['stuff', 'here'], function(donkeys, aruba) {
+        sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
           /* ${comment} */
           return {
             llamas: donkeys.version,
@@ -614,7 +614,7 @@ describe('Plugin for define blocks', () => {
     'transforms normally with non-top-level line comments',
     (comment) => {
       expect(`
-        define(['stuff', 'here'], function(donkeys, aruba) {
+        sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
           // ${comment}
           return {
             llamas: donkeys.version,
@@ -641,7 +641,7 @@ describe('Plugin for define blocks', () => {
       expect(`
         /* ${comment} */
         // ${comment}
-        define(['stuff', 'here'], function(donkeys, aruba) {
+        sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
           return {
             llamas: donkeys.version,
             cows: aruba.hi
@@ -664,7 +664,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms define call that use var args dependency list and factory', () => {
     expect(`
-      define(deps, factory);
+      sap.ui.define(deps, factory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factory',
@@ -679,7 +679,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms named define call that uses var args dependency list and factory', () => {
     expect(`
-      define('somename', deps, factory);
+      sap.ui.define('somename', deps, factory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factory',
@@ -693,7 +693,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms named define call that use var args for all three arguments', () => {
     expect(`
-      define(name, deps, factory);
+      sap.ui.define(name, deps, factory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factory',
@@ -707,7 +707,7 @@ describe('Plugin for define blocks', () => {
 
   it('transforms define with var arg dependency list', () => {
     expect(`
-      define(deps, function(foo, bar) {
+      sap.ui.define(deps, function(foo, bar) {
         foo.doSomething();
         bar.doSomethingElse();
       });

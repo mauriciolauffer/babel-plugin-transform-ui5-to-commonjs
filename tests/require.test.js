@@ -6,7 +6,7 @@ const { checkVariableDepAndFactoryResult } = require('./test-helpers');
 describe('Plugin for require blocks', () => {
   it('transforms require blocks with one dependency', () => {
     expect(`
-      require(['llamas'], function(llama) {
+      sap.ui.require(['llamas'], function(llama) {
         llama.doSomeStuff();
       });
     `).toBeTransformedTo(`
@@ -19,7 +19,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require blocks with multiple dependencies', () => {
     expect(`
-      require(['llamas', 'frogs'], function(llama, frog) {
+      sap.ui.require(['llamas', 'frogs'], function(llama, frog) {
         llama.doSomeStuff();
         frog.sayRibbit();
       });
@@ -35,7 +35,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require blocks with unused dependencies', () => {
     expect(`
-      require(['llamas', 'frogs'], function(llama) {
+      sap.ui.require(['llamas', 'frogs'], function(llama) {
         llama.doSomeStuff();
       });
     `).toBeTransformedTo(`
@@ -49,7 +49,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require blocks that have no factory function', () => {
     expect(`
-      require(['here', 'are', 'some', 'deps']);
+      sap.ui.require(['here', 'are', 'some', 'deps']);
     `).toBeTransformedTo(`
       require('here');
       require('are');
@@ -60,9 +60,9 @@ describe('Plugin for require blocks', () => {
 
   it('transforms nested require blocks that have no factory function', () => {
     expect(`
-      require(['here', 'is', 'i'], function(here) {
+      sap.ui.require(['here', 'is', 'i'], function(here) {
         here.doStuff();
-        require(['yep', 'that', 'me']);
+        sap.ui.require(['yep', 'that', 'me']);
       });
     `).toBeTransformedTo(`
       (function() {
@@ -79,9 +79,9 @@ describe('Plugin for require blocks', () => {
 
   it('transforms nested require blocks that have a factory function', () => {
     expect(`
-      require(['here', 'is', 'i'], function(here) {
+      sap.ui.require(['here', 'is', 'i'], function(here) {
         here.doStuff();
-        require(['yep', 'that', 'me'], function(yep) {
+        sap.ui.require(['yep', 'that', 'me'], function(yep) {
           yep.doStuff();
         });
       });
@@ -103,9 +103,9 @@ describe('Plugin for require blocks', () => {
 
   it('transforms a require block that is within a define block', () => {
     expect(`
-      define(['here', 'is', 'i'], function(here) {
+      sap.ui.define(['here', 'is', 'i'], function(here) {
         here.doStuff();
-        require(['yep', 'that', 'me'], function(yep) {
+        sap.ui.require(['yep', 'that', 'me'], function(yep) {
           yep.doStuff();
         });
       });
@@ -127,7 +127,7 @@ describe('Plugin for require blocks', () => {
 
   it('ignores non-function factories', () => {
     expect(`
-      require(['sup', 'dawg', 'hi'], { nonFunction: 'factory' });
+      sap.ui.require(['sup', 'dawg', 'hi'], { nonFunction: 'factory' });
     `).toBeTransformedTo(`
       require('sup');
       require('dawg');
@@ -137,7 +137,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms factories that use the rest operator', () => {
     expect(`
-      require(['dep1', 'dep2', 'dep3'], function(dep, ...rest) {
+      sap.ui.require(['dep1', 'dep2', 'dep3'], function(dep, ...rest) {
         dep.doStuff()
       })
     `).toBeTransformedTo(`
@@ -151,7 +151,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms factories that use the rest operator including AMD keywords', () => {
     expect(`
-      require(['dep1', 'dep2', 'module', 'exports', 'require'], function(dep, ...rest) {
+      sap.ui.require(['dep1', 'dep2', 'module', 'exports', 'require'], function(dep, ...rest) {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -165,7 +165,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms factories that use the rest operator when there are no rest arguments', () => {
     expect(`
-      require(['dep1'], function(dep, ...rest) {
+      sap.ui.require(['dep1'], function(dep, ...rest) {
         dep.doStuff();
       });
     `).toBeTransformedTo(`
@@ -180,7 +180,7 @@ describe('Plugin for require blocks', () => {
   it('ignores modules that have been excluded by block comments', () => {
     const program = `
       /* ${TRANSFORM_AMD_TO_COMMONJS_IGNORE} */
-      require(['llamas', 'frogs'], function(llama, frog) {
+      sap.ui.require(['llamas', 'frogs'], function(llama, frog) {
         llama.doSomeStuff();
         frog.sayRibbit();
       });
@@ -191,7 +191,7 @@ describe('Plugin for require blocks', () => {
   it('ignores modules that have been excluded by line comments', () => {
     const program = `
       // ${TRANSFORM_AMD_TO_COMMONJS_IGNORE}
-      require(['llamas', 'frogs'], function(llama, frog) {
+      sap.ui.require(['llamas', 'frogs'], function(llama, frog) {
         llama.doSomeStuff();
         frog.sayRibbit();
       });
@@ -203,7 +203,7 @@ describe('Plugin for require blocks', () => {
     'transforms normally with non-top-level block comments',
     (comment) => {
       expect(`
-        require(['llamas', 'frogs'], function(llama, frog) {
+        sap.ui.require(['llamas', 'frogs'], function(llama, frog) {
           /* ${comment} */
           llama.doSomeStuff();
           frog.sayRibbit();
@@ -224,7 +224,7 @@ describe('Plugin for require blocks', () => {
     'transforms normally with non-top-level line comments',
     (comment) => {
       expect(`
-        require(['llamas', 'frogs'], function(llama, frog) {
+        sap.ui.require(['llamas', 'frogs'], function(llama, frog) {
           // ${comment}
           llama.doSomeStuff();
           frog.sayRibbit();
@@ -247,7 +247,7 @@ describe('Plugin for require blocks', () => {
       expect(`
         /* ${comment} */
         // ${comment}
-        require(['llamas', 'frogs'], function(llama, frog) {
+        sap.ui.require(['llamas', 'frogs'], function(llama, frog) {
           llama.doSomeStuff();
           frog.sayRibbit();
         });
@@ -266,7 +266,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with non-array dependency list', () => {
     expect(`
-      require(deps, function(foo, bar) {
+    sap.ui.require(deps, function(foo, bar) {
         foo.doSomething();
         bar.doSomethingElse();
       });
@@ -286,7 +286,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with non-array dependencies and non-function factory', () => {
     expect(`
-      require(deps, factory);
+    sap.ui.require(deps, factory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factory',
@@ -300,7 +300,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and member expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], this.factory);
+      sap.ui.require(["dep1", "dep2"], this.factory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'this.factory',
@@ -314,7 +314,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and optional member expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], foo?.factory);
+      sap.ui.require(["dep1", "dep2"], foo?.factory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'foo?.factory',
@@ -328,7 +328,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and call expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], getFactory());
+      sap.ui.require(["dep1", "dep2"], getFactory());
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'getFactory()',
@@ -342,7 +342,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and optional call expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], getFactory?.());
+      sap.ui.require(["dep1", "dep2"], getFactory?.());
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'getFactory?.()',
@@ -356,7 +356,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and array expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], factories[i]);
+      sap.ui.require(["dep1", "dep2"], factories[i]);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factories[i]',
@@ -370,7 +370,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and logical expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], factory1 || factory2);
+      sap.ui.require(["dep1", "dep2"], factory1 || factory2);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factory1 || factory2',
@@ -384,7 +384,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and conditional expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], foo ? factory1 : factory2);
+      sap.ui.require(["dep1", "dep2"], foo ? factory1 : factory2);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'foo ? factory1 : factory2',
@@ -398,7 +398,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and assignment expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], factory = myFactory);
+      sap.ui.require(["dep1", "dep2"], factory = myFactory);
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: 'factory = myFactory',
@@ -412,7 +412,7 @@ describe('Plugin for require blocks', () => {
 
   it('transforms require with array dependencies and parenthesized expression expression factory', () => {
     expect(`
-      require(["dep1", "dep2"], (factory = myFactory));
+      sap.ui.require(["dep1", "dep2"], (factory = myFactory));
     `).toBeTransformedTo(
       checkVariableDepAndFactoryResult({
         factory: '(factory = myFactory)',
