@@ -7,6 +7,8 @@ const {
   DEFINE,
   AMD_DEFINE_RESULT,
   MAYBE_FUNCTION,
+  AMD_DEFINE,
+  AMD_REQUIRE,
 } = require('./constants');
 const createHelpers = require('./helpers');
 
@@ -30,8 +32,8 @@ module.exports = ({ types: t }) => {
   } = createHelpers({ types: t });
 
   const argumentDecoders = {
-    [DEFINE]: decodeDefineArguments,
-    [REQUIRE]: decodeRequireArguments,
+    [AMD_DEFINE]: decodeDefineArguments,
+    [AMD_REQUIRE]: decodeRequireArguments,
   };
 
   // Simple version of zip that only pairs elements until the end of the first array
@@ -51,11 +53,20 @@ module.exports = ({ types: t }) => {
     const { node, parent } = path;
 
     if (!t.isCallExpression(node.expression)) return;
+    if (!t.isMemberExpression(node.expression.callee)) return;
+    if (!t.isMemberExpression(node.expression.callee.object)) return;
+    if (!t.isIdentifier(node.expression.callee.property)) return;
+    if (!t.isIdentifier(node.expression.callee.object.object)) return;
+    if (!t.isIdentifier(node.expression.callee.object.property)) return;
 
     const options = Object.assign({ restrictToTopLevelDefine: true }, opts);
 
-    const { name } = node.expression.callee;
-    const isDefineCall = name === DEFINE;
+    const name = [
+      node.expression.callee.object.object.name, // sap
+      node.expression.callee.object.property.name, // ui
+      node.expression.callee.property.name, // define|require
+    ].join('.');
+    const isDefineCall = name === AMD_DEFINE;
 
     if (isDefineCall && options.restrictToTopLevelDefine && !t.isProgram(parent)) return;
 
@@ -88,10 +99,10 @@ module.exports = ({ types: t }) => {
       // define/require call with unknown factory type and/or non-array literal dependencies.
       // Note that we ignore some cases that are already handled by pre-existing code.  These
       // include define calls with array type dependencies and unknown type function factories:
-      //    define(['dep1', 'dep2'], myFactory);
+      //    sap.ui.define(['dep1', 'dep2'], myFactory);
       // as well as require calls with array dependencies and factories who's types can be
       // determined known at compile time (function or non-function):
-      //    require(['dep1', 'dep2'], {nonFunction: 'factory'});
+      //    sap.ui.require(['dep1', 'dep2'], {nonFunction: 'factory'});
       factory &&
       dependencyList &&
       ((isDefineCall && !isDependencyArray) ||

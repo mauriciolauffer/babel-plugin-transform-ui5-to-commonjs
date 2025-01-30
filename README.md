@@ -29,7 +29,7 @@ Add the transform to your .babelrc:
 Input:
 
 ```javascript
-define(['jquery', 'underscore', 'myModule'], function($, _) {
+sap.ui.define(['jquery', 'underscore', 'myModule'], function($, _) {
   // ...
   return {
     // ...
@@ -57,9 +57,9 @@ Input:
 
 ```javascript
 // Nested requires
-require(['jquery', 'underscore', 'myModule'], function($, _) {
+sap.ui.require(['jquery', 'underscore', 'myModule'], function($, _) {
   // ...
-  require(['anotherModule'], function(anotherModule) {
+  sap.ui.require(['anotherModule'], function(anotherModule) {
     // ...
   });
 });
@@ -100,7 +100,7 @@ If you need to ignore specific modules that are picked up by the plugin (for exa
 
 ```
 /* transform-amd-to-commonjs-ignore */
-define(['stuff', 'here'], function(donkeys, aruba) {
+sap.ui.define(['stuff', 'here'], function(donkeys, aruba) {
   return {
       llamas: donkeys.version,
       cows: aruba.hi
@@ -217,7 +217,7 @@ The following will _not_ be transformed, since the plugin only accounts for depe
 ```javascript
 // DON'T DO THIS! It won't be transformed correctly.
 var dependencies = ['one', 'two'];
-define(dependencies, function(one, two) {
+sap.ui.define(dependencies, function(one, two) {
   one.doStuff();
   return two.doStuff();
 });
@@ -226,7 +226,7 @@ define(dependencies, function(one, two) {
 If you want to be able to define your dependencies as above, please submit an issue. Otherwise, please define your modules as:
 
 ```javascript
-define(['one', 'two'], function(one, two) {
+sap.ui.define(['one', 'two'], function(one, two) {
   one.doStuff();
   return two.doStuff();
 });
@@ -240,7 +240,7 @@ var factory = function(one, two) {
   one.doStuff();
   return two.doStuff();
 };
-define(['one', 'two'], factory);
+sap.ui.define(['one', 'two'], factory);
 ```
 
 A runtime check has to be done to determine what to export, so the transformed code looks like this:
@@ -254,8 +254,8 @@ var maybeFactory = factory;
 if (typeof maybeFactory === 'function') {
   module.exports = factory(require('one'), require('two'));
 } else {
-  require('one');
-  require('two');
+  sap.ui.require('one');
+  sap.ui.require('two');
   module.exports = maybeFactory;
 };
 ```
@@ -278,7 +278,7 @@ otherwise you'll end up with things like `require('module')`.
 
   Input (AMD):
   ```javascript
-  define(['module'], function(module) {
+  sap.ui.define(['module'], function(module) {
     module.exports = { hey: 'boi' };
     return { value: 22 };
   });
